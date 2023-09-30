@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <style>
+        /* Reset some default styles */
+        body, h1, h2, ul, p {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        header {
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            border-radius: 5px 5px 0 0;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Form styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        select,
+        input[type="date"],
+        button {
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Task list styles */
+        #task-list {
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            background-color: #fff;
+            align-items: center;
+            border-radius: 5px;
+        }
+
+        li.completed {
+            background-color: #e8f5e9; /* Light green for completed tasks */
+        }
+
+        li:hover {
+            background-color: #f5f5f5; /* Light gray on hover */
+        }
+
+        /* Task actions (Mark as Complete and Delete) */
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .task-actions button {
+            padding: 5px 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .complete-button {
+            background-color: #4CAF50; /* Green for complete */
+            color: white;
+        }
+
+        .complete-button:hover {
+            background-color: #45a049;
+        }
+
+        .remove-button {
+            background-color: #f44336; /* Red for delete */
+            color: white;
+        }
+
+        .remove-button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>To-Do List</h1>
+    </header>
+    <div class="container">
+        <section id="add-task">
+            <h2>Add Task</h2>
+            <form id="addTaskForm">
+                <div class="form-group">
+                    <label for="taskName">Task Name:</label>
+                    <input type="text" id="taskName" required>
+                </div>
+                <div class="form-group">
+                    <label for="priority">Priority:</label>
+                    <select id="priority" required>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dueDate">Due Date:</label>
+                    <input type="date" id="dueDate" required>
+                </div>
+                <button type="button" id="addTaskButton">Add Task</button>
+            </form>
+        </section>
+
+        <section id="task-list">
+            <h2>Task List</h2>
+            <ul id="taskList"></ul>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const addTaskForm = document.getElementById("addTaskForm");
+            const taskList = document.getElementById("taskList");
+            const addTaskButton = document.getElementById("addTaskButton");
+
+            // Function to create a new task element
+            function createTaskElement(taskName, priority, dueDate) {
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `
+                    <span>${taskName}</span>
+                    <span>Priority: ${priority}</span>
+                    <span>Due Date: ${dueDate}</span>
+                    <div class="task-actions">
+                        <button class="complete-button">Mark as Complete</button>
+                        <button class="remove-button">Delete</button>
+                    </div>
+                `;
+
+                // Event listener for completing a task
+                const completeButton = listItem.querySelector(".complete-button");
+                completeButton.addEventListener("click", function() {
+                    listItem.classList.toggle("completed");
+                    completeButton.textContent = listItem.classList.contains("completed") ? "Mark as Incomplete" : "Mark as Complete";
+                });
+
+                // Event listener for deleting a task
+                const removeButton = listItem.querySelector(".remove-button");
+                removeButton.addEventListener("click", function() {
+                    taskList.removeChild(listItem);
+                });
+
+                return listItem;
+            }
+
+            // Event listener for adding a new task
+            addTaskButton.addEventListener("click", function(e) {
+                e.preventDefault();
+
+                const taskName = document.getElementById("taskName").value;
+                const priority = document.getElementById("priority").value;
+                const dueDate = document.getElementById("dueDate").value;
+
+                if (taskName.trim() === "") {
+                    alert("Please enter a task name.");
+                    return;
+                }
+
+                // Create a new task element and append it to the task list
+                const listItem = createTaskElement(taskName, priority, dueDate);
+                taskList.appendChild(listItem);
+
+                // Clear the form fields
+                document.getElementById("taskName").value = "";
+                document.getElementById("priority").value = "high";
+                document.getElementById("dueDate").value = "";
+            });
+        });
+    </script>
+</body>
+</html>
